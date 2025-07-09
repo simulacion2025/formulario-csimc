@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contrato de Confidencialidad</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      margin: 0;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background-color: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #2c3e50;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .confidentiality-text {
+      text-align: justify;
+      margin-bottom: 30px;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    input[type="text"], input[type="date"] {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    .radio-group {
+      margin: 20px 0;
+    }
+    .radio-option {
+      display: inline-block;
+      margin-right: 20px;
+    }
+    button {
+      background-color: #3498db;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      display: block;
+      margin: 30px auto 0;
+    }
+    button:hover {
+      background-color: #2980b9;
+    }
+    .required {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>CONTRATO DE CONFIDENCIALIDAD</h1>
+    
+    <div class="confidentiality-text">
+      <p>Al ser parte de una experiencia de aprendizaje con simulación se debe mantener permanentemente (antes, durante y después) la confidencialidad de todos los involucrados en la simulación.</p>
+    </div>
+    
+    <div class="form-group radio-group">
+      <label>¿Acepta el contrato de confidencialidad? <span class="required">*</span></label>
+      <div class="radio-option">
+        <input type="radio" id="confidencialidad-si" name="confidencialidad" value="Sí" required>
+        <label for="confidencialidad-si">Sí</label>
+      </div>
+      <div class="radio-option">
+        <input type="radio" id="confidencialidad-no" name="confidencialidad" value="No">
+        <label for="confidencialidad-no">No</label>
+      </div>
+    </div>
+    
+    <div class="form-group">
+      <label for="fecha">Fecha <span class="required">*</span></label>
+      <input type="date" id="fecha" name="fecha" required>
+    </div>
+    
+    <div class="form-group">
+      <label for="nombre">Nombre completo <span class="required">*</span></label>
+      <input type="text" id="nombre" name="nombre" required>
+    </div>
+    
+    <div class="form-group">
+      <label for="dni">DNI <span class="required">*</span></label>
+      <input type="text" id="dni" name="dni" required>
+    </div>
+    
+    <div class="form-group radio-group">
+      <label>¿Acepta la captación de fotos? <span class="required">*</span></label>
+      <div class="radio-option">
+        <input type="radio" id="fotos-si" name="fotos" value="Sí" required>
+        <label for="fotos-si">Sí</label>
+      </div>
+      <div class="radio-option">
+        <input type="radio" id="fotos-no" name="fotos" value="No">
+        <label for="fotos-no">No</label>
+      </div>
+    </div>
+    
+    <div class="form-group">
+      <label for="grupo">Grupo</label>
+      <input type="text" id="grupo" name="grupo">
+    </div>
+    
+    <button type="button" onclick="enviarFormulario()">Enviar</button>
+  </div>
+
+  <script>
+    function enviarFormulario() {
+      // Validar campos requeridos
+      const confidencialidad = document.querySelector('input[name="confidencialidad"]:checked');
+      const fecha = document.getElementById('fecha').value;
+      const nombre = document.getElementById('nombre').value;
+      const dni = document.getElementById('dni').value;
+      const fotos = document.querySelector('input[name="fotos"]:checked');
+      
+      if (!confidencialidad || !fecha || !nombre || !dni || !fotos) {
+        alert('Por favor complete todos los campos requeridos (*)');
+        return;
+      }
+      
+      // Obtener todos los valores del formulario
+      const formData = {
+        fecha: fecha,
+        nombre: nombre,
+        dni: dni,
+        confidencialidad: confidencialidad.value,
+        fotos: fotos.value,
+        grupo: document.getElementById('grupo').value || 'No especificado'
+      };
+      
+      // Mostrar mensaje de carga
+      const boton = document.querySelector('button');
+      boton.disabled = true;
+      boton.textContent = 'Enviando...';
+      
+      // URL de tu Google Apps Script (debes reemplazarla)
+      const scriptURL = 'https://script.google.com/macros/s/AKfycbzyunItbN7EbLzkV5M_PqISU18Ns0iz4aXRiMUZ-4L5TMqYb9PCh7KhvFpn3lToxmmJ/exec';
+      
+      fetch(scriptURL, {
+        method: 'POST',
+        body: JSON.stringify(formData),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(response => response.json())
+      .then(data => {
+        alert('Datos enviados correctamente');
+        // Limpiar formulario
+        document.querySelector('form').reset();
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('Ocurrió un error al enviar los datos');
+      })
+      .finally(() => {
+        boton.disabled = false;
+        boton.textContent = 'Enviar';
+      });
+    }
+  </script>
+</body>
+</html>
